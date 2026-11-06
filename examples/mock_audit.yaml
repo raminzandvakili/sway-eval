@@ -1,0 +1,75 @@
+# A complete audit on the built-in mock decision model: no API key, no GPU, no cost.
+# The mock reads the stated rule exactly but weights sections by position, adds a small
+# carryover between adjacent sections and a small formatting effect, and answers with
+# run-to-run noise on a 0.01 grid like a hosted API. Every one of these is planted, so the
+# audit has a known answer. Relative paths resolve against this file's folder.
+name: mock_audit
+question: "How often does the order of a record's sections decide the mock model's verdict?"
+date: launch                 # stamped with the launch date (UTC)
+seed: 0
+
+model:
+  provider: mock
+  name: mock-1
+  position_weights: [1.4, 1.2, 1.0, 0.8, 0.6]   # earlier sections count more
+  carryover: 0.02            # first-order term on adjacent sections' points
+  format_effect: -0.3        # logit shift when lines are not bulleted with "- "
+  scale: 1.0
+  est_latency_s: 0.011       # per call, for the wall-time estimate (measured on one machine)
+  first_option_bias: 0.1     # a small option-order bias
+  noise: 0.15                # run-to-run noise on the logit
+  grid: 0.01                 # probabilities reported to two decimals
+  # drift_after: 3000        # uncomment both to plant a serving change after 3,000 calls;
+  # drift_weights: [1.0, 1.0, 1.0, 1.0, 1.0]   # the canaries should halt the run
+
+dataset:
+  kind: synthetic_rubric
+  items: out/items.jsonl     # written by `sway-eval generate`
+  threshold: 8
+  levels: [-5, 4]
+  per_level: 5
+
+prompt:
+  instruction: "Screen this candidate with the following rule. Score points as follows: 1 point per year of relevant experience (at most 8); degree: bachelor's 1, master's 2, doctorate 3, none 0; 1 point per required skill listed (required skills: Python, SQL, statistics, cloud deployment, data visualization); 1 point per certification. A candidate advances if their total is at least 8 points. Nothing else counts. Should this candidate advance?"
+  options: [ADVANCE, DO NOT ADVANCE]
+  target: ADVANCE
+  format: {separator: "\n\n", heading_style: "{h}:", bullet: "- "}
+
+layouts:
+  kind: all                  # all 120 orderings of five sections
+
+content_free: true
+option_rotations: true
+noise:                       # repeat study at the convention layout
+  margin_edges: {far: 0.60, near: 0.20}
+  items_per_stratum: 10
+  repeats: 10
+  target_share: 0.10         # noise at most 10% of order variance, else extra layout repeats
+  max_layout_repeats: 5
+canary:                      # 20 fixed records re-scored at the start and end of every batch
+  per_stratum: {at: 10, near: 5, far: 5}
+  batch_size: 1000
+  dispersion_pct: 0.99
+  mean_band: [0.005, 0.995]
+  sigma_floor: 0.005
+  grid: 0.01
+  floor_changes: 2
+  reference_checks: 20000
+  reference_seed: 20261120
+format_variants:
+  - {separator: "\n"}
+  - {heading_style: "## {h}"}
+  - {bullet: "* "}
+
+analysis:
+  tie_option: DO NOT ADVANCE
+  axis: level
+  zone_width: span
+  pi: 0.10
+  taus: [0.80, 0.90]
+  level_step: 1
+  threshold_level: 0
+  slope_window: 2
+
+output_root: out/results
+cache: out/cache.sqlite

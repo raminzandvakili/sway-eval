@@ -1,0 +1,82 @@
+# Output of the example configs and the template (out/ next to each config)
+out/
+
+# Secrets: never commit real API keys
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.venv-local/
+.venv-d2/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.eggs/
+*.egg
+wheels/
+*.so
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.hypothesis/
+.dmypy.json
+.pyre/
+.pytype/
+
+# Local assistant and plugin files (kept in the private repo)
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.mcp.json
+# academic-research-skills plugin outputs (drafts, notes, reviews, passports)
+phase[1-7]_*/
+
+# Run outputs and caches (keep them outside this repository)
+runs/
+outputs/
+cache/
+*.parquet
+*.jsonl
+*.npz
+
+# OS files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# uv: commit pyproject.toml, uv.lock and .python-version; .venv/ is ignored above

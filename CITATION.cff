@@ -1,0 +1,41 @@
+# GitHub reads this file and shows a "Cite this repository" button.
+# Before the first public release:
+#   1. Uncomment and fill in orcid and date-released.
+#   2. Once the accompanying paper has an arXiv ID, uncomment preferred-citation, so
+#      people cite the paper and those citations count toward it.
+cff-version: 1.2.0
+message: "If you use sway-eval, please cite it as below."
+type: software
+title: "sway-eval: Auditing Order Sensitivity in AI Decision Models"
+abstract: >-
+  sway-eval measures, on a deployer's own records and without labels, how often
+  the order in which a record presents its sections decides a decision model's
+  verdict, prices that sensitivity as a Brier cost, compares defenses
+  (canonical layouts, balanced Williams sets, an adaptive screen) by calls and
+  agreement, and checks hosted models for run-to-run noise and serving changes.
+authors:
+  - given-names: Ramin
+    family-names: Zandvakili
+    # orcid: "https://orcid.org/0000-0000-0000-0000"
+version: 0.0.1
+# date-released: "2027-01-15"
+license: MIT
+repository-code: "https://github.com/raminzandvakili/sway-eval"
+keywords:
+  - decision models
+  - System One models
+  - LLM evaluation
+  - calibration
+  - order sensitivity
+  - fairness
+  - robustness
+# preferred-citation:
+#   type: article
+#   title: "<paper title>"
+#   authors:
+#     - given-names: Ramin
+#       family-names: Zandvakili
+#   year: 2027
+#   identifiers:
+#     - type: other
+#       value: "arXiv:XXXX.XXXXX"

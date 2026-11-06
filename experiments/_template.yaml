@@ -1,0 +1,69 @@
+# Copy and rename. Relative paths are resolved against this file's folder.
+name: example                # names the results folder
+paper: ""                    # optional project letter; if set, the name must start with it
+question: "One sentence: what this run answers"
+date: 2026-11-01             # names the results folder
+seed: 0
+
+model:
+  provider: mock             # mock | typesafe | ...
+  name: mock-1
+  version: ""                # exact version string to request; required for real APIs
+  price_per_m_input_tokens: 0.0   # for the cost estimate; take it from the vendor's price page
+  est_latency_s: 0.0         # for the wall-time estimate
+  concurrency: 1
+  # mock only: known position weights, logit scale, noise and probability grid
+  position_weights: [1.0, 1.0, 1.0, 1.0, 1.0]
+  scale: 1.0
+  noise: 0.0
+  grid: null
+
+dataset:
+  kind: synthetic_rubric     # synthetic_rubric (more loaders to come)
+  items: out/items.jsonl
+  threshold: 8               # rubric points needed to advance
+  levels: [-5, 4]            # qualification levels (points minus threshold), inclusive
+  per_level: 5
+
+prompt:
+  instruction: "..."         # the full instruction, including the stated rule
+  options: [ADVANCE, DO NOT ADVANCE]
+  target: ADVANCE            # the option whose probability is analysed
+  format: {separator: "\n\n", heading_style: "{h}:", bullet: "- "}
+
+layouts:
+  kind: williams             # williams: the balanced set, the audit default (2n orderings for odd n); all: every ordering, to validate the balanced set
+
+content_free: true           # one call per item on "N/A"
+epoch: 0                     # serving epoch; raise it after a confirmed canary alarm (new cache keys)
+noise:                       # repeat study at the convention layout; all values must be set
+  margin_edges: {far: null, near: null}   # top-2 margin edges of the far / near / at strata
+  items_per_stratum: null    # items drawn per stratum (all if fewer)
+  repeats: null              # calls per repeat item
+  target_share: null         # noise share of order variance to stay under
+  max_layout_repeats: null   # cap on calls per layout for near and at items
+canary:                      # needs noise; omit both to run without them
+  per_stratum: {at: null, near: null, far: null}
+  batch_size: null           # calls between canary checks
+  dispersion_pct: null       # quantile of the leave-one-out reference D used as threshold T
+  mean_band: [null, null]    # quantiles of the reference mean deviation M giving [L, U]
+  sigma_floor: null          # floor on each canary's SD
+  grid: null                 # the API's probability grid step
+  floor_changes: null        # T and [L, U] never tighter than this many one-step changes
+  reference_checks: null     # reference checks drawn by leave-one-out
+  reference_seed: null
+format_variants:             # formatting baselines of the convention order
+  - {separator: "\n"}
+
+analysis:
+  tie_option: null           # the option that wins exact ties (one of prompt.options); must be set
+  axis: level                # the item field the flip zone is drawn on
+  zone_width: null           # count | span: how discrete levels become a width; must be set
+  pi: null                   # flip-probability floor for the flip zone
+  level_step: 1
+  threshold_level: 0
+  slope_window: 2            # levels either side of the threshold for the model-based fit
+
+output_root: out/results
+cache: out/cache.sqlite
+notes: ""

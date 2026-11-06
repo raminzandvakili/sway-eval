@@ -16,7 +16,14 @@ abstract: >-
 authors:
   - given-names: Ramin
     family-names: Zandvakili
+    affiliation: University of Minnesota
     # orcid: "https://orcid.org/0000-0000-0000-0000"
+  - given-names: Nasim
+    family-names: Eshgarf
+    affiliation: University of Minnesota
+  - given-names: Sepehr
+    family-names: Eshgarf
+    affiliation: University of Isfahan
 version: 0.0.1
 # date-released: "2027-01-15"
 license: MIT

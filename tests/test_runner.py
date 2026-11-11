@@ -360,3 +360,29 @@ def test_balanced_set_average_leaves_out_the_extra_convention_call(tmp_path):
     from sway_eval.report import write_report
     md = write_report(out).read_text(encoding="utf-8")
     assert f"- {len(items) * 10:,} layouts in the audited set" in md and "template-order calls" in md
+
+
+def test_tie_sensitivity_uses_the_same_layout_probabilities(tmp_path):
+    # With layout repeats, the flip probability is computed on each layout's averaged call; the
+    # ties-to-the-first-option check must use those same averages, not the single calls.
+    cfg = config(tmp_path, noise=0.6)  # noisy enough that near items get layout repeats (R = 5)
+    cfg["noise"]["max_layout_repeats"] = 5
+    items = items_for(cfg)
+    save_items(items, cfg["dataset"]["items"])
+    out = execute(items, cfg, build_adapter(cfg), log=lambda *_: None)
+    analyze(out)
+    calls = {}
+    for line in (out / "records.jsonl").open():
+        r = json.loads(line)
+        if r["kind"] in ("layout", "layout_repeat"):
+            calls.setdefault(r["example_id"], {}).setdefault(tuple(r["passage_ids"]), []).append(r["probs"][0])
+    checked = 0
+    for line in (out / "per_item.jsonl").open():
+        row = json.loads(line)
+        if row["calls_per_layout"] == 1:
+            continue
+        avg = [sum(v) / len(v) for v in calls[row["item_id"]].values()]
+        if all(p != 0.5 for p in avg) and sum(p for p in avg) / len(avg) != 0.5:
+            assert row["flip_probability_first_option_ties"] == row["flip_probability"]
+            checked += 1
+    assert checked > 0

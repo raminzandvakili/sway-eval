@@ -130,7 +130,7 @@ If you use `sway-eval`, please cite it. GitHub's **Cite this repository** button
 
 ```bibtex
 @software{zandvakili_sway_eval_2026,
-  author  = {Zandvakili, Ramin and Eshgarf, Nasim and Eshgarf, Sepehr},
+  author  = {Zandvakili, Ramin and Eshgarf, Nasim},
   title   = {sway-eval: Auditing Order Sensitivity in AI Decision Models},
   year    = {2026},
   version = {0.0.1},

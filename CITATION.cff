@@ -21,9 +21,6 @@ authors:
   - given-names: Nasim
     family-names: Eshgarf
     affiliation: University of Minnesota
-  - given-names: Sepehr
-    family-names: Eshgarf
-    affiliation: University of Isfahan
 version: 0.0.1
 # date-released: "2027-01-15"
 license: MIT

@@ -113,7 +113,7 @@ def analyze(run_dir: str | Path) -> dict:
             **fs,
             "flip_probability_single_call": single["flip_probability"],
             "calls_per_layout": 1 + max((len(v) for v in extra[iid].values()), default=0) if iid in extra else 1,
-            "flip_probability_first_option_ties": flip_stats(vecs, options, None)["flip_probability"],
+            "flip_probability_first_option_ties": flip_stats(avg or vecs, options, None)["flip_probability"],
             "pairwise_flip_rate": pairwise_flip_rate(vecs, options, tie),
             "sd_win": pstdev(win_probs),
             "order_variance_classes": order_variance_classes(vecs),

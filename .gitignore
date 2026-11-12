@@ -35,12 +35,9 @@ htmlcov/
 .pyre/
 .pytype/
 
-# Local assistant and plugin files (kept in the private repo)
-.claude/
-CLAUDE.md
-CLAUDE.local.md
+# Local tool files
 .mcp.json
-# academic-research-skills plugin outputs (drafts, notes, reviews, passports)
+# Local drafting outputs
 phase[1-7]_*/
 
 # Run outputs and caches (keep them outside this repository)

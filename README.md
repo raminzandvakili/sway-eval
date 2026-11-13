@@ -2,7 +2,8 @@
 
 **Audit how much the order of a record's sections decides an AI decision model's verdict.**
 
-> Status: early development. The API will change before the first release.
+> Status: version 0.1.0, the first release. The API may change in later versions; see
+> [Known limitations](#known-limitations).
 
 A decision model takes a record and a question with fixed options, such as ADVANCE or DO NOT
 ADVANCE, and returns a probability for each option in one pass. When a deployer screens records
@@ -96,7 +97,12 @@ known answer. It shows:
   layout, k random layouts, the balanced Williams set, the full average and the adaptive screen.
 
 `examples/mock_drift.yaml` plants a serving change after 3,000 calls; the canaries halt that run
-and the report says so.
+and the report says so. `examples/mock_exact.yaml` audits the same records with the mock's noise and
+rounding switched off, so its report gives the values the noisy audit should print; run it after
+`mock_audit.yaml` and compare the two reports. `examples/recover_mock.py` fits the mock's planted
+parameters from a run's records. It needs numpy, which the package does not install:
+`uv run --with numpy python examples/recover_mock.py examples/out/results/<run> recovery.json`
+with uv, or `pip install numpy` and then `python examples/recover_mock.py ...` with pip.
 
 To audit a real model, copy the example, set `model.provider`, `model.name` and the exact
 `model.version`, and point `dataset.items` at your records. Set `layouts.kind: williams` for a routine
@@ -114,6 +120,27 @@ One YAML file describes a run: the model, the records, the instruction with the 
 layouts, the baselines, the noise study and canaries, and the analysis settings (tie rule, zone
 width convention, threshold). A config is rejected if a choice that changes the result is left
 unset. See `experiments/_template.yaml` for every field.
+
+## Known limitations
+
+These are known in 0.1.0 and will be addressed in the next version.
+
+- The defense comparison evaluates the balanced set with a record's sections labelled in its
+  template order, while an audit with `layouts.kind: williams` labels them by sorted unit id. Both
+  are balanced sets, but they are different sets of orderings, so the comparison does not score
+  exactly the orderings a routine audit runs.
+- The formatting SD, and with it rho, is not corrected for run-to-run noise (the order variance is).
+  On a noisy model the formatting SD is overstated and rho understated.
+- Agreement intervals are bootstrap intervals over records, so a defense that agrees on every record
+  gets the interval [1.00, 1.00]; an exact binomial interval would say more.
+- On the mock with noise and rounding switched off (`examples/mock_exact.yaml`), eight orderings
+  have a probability of exactly 0.5 in exact arithmetic, and the side of 0.5 they compute to depends
+  on the Python version, since the mock adds its terms with `sum()`. Under Python 3.10 and 3.11 all
+  eight come out just above 0.5; under 3.12 and 3.15 six come out just below and two at exactly 0.5,
+  which the tie rule decides. The noise-free flip probability therefore reads 0.087 under 3.10 and
+  3.11 and 0.088 under 3.12 and 3.15. Other models are not affected: the package takes their
+  probabilities as returned. The quick-start output (`examples/mock_audit.yaml`) is the same under
+  3.10 and 3.15.
 
 ## Tests
 
@@ -133,7 +160,7 @@ If you use `sway-eval`, please cite it. GitHub's **Cite this repository** button
   author  = {Zandvakili, Ramin and Eshgarf, Nasim},
   title   = {sway-eval: Auditing Order Sensitivity in AI Decision Models},
   year    = {2026},
-  version = {0.0.1},
+  version = {0.1.0},
   url     = {https://github.com/raminzandvakili/sway-eval}
 }
 ```

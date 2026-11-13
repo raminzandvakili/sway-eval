@@ -1,8 +1,4 @@
 # GitHub reads this file and shows a "Cite this repository" button.
-# Before the first public release:
-#   1. Uncomment and fill in date-released.
-#   2. Once the accompanying paper has an arXiv ID, uncomment preferred-citation, so
-#      people cite the paper and those citations count toward it.
 cff-version: 1.2.0
 message: "If you use sway-eval, please cite it as below."
 type: software
@@ -21,8 +17,8 @@ authors:
   - given-names: Nasim
     family-names: Eshgarf
     affiliation: University of Minnesota
-version: 0.0.1
-# date-released: "2027-01-15"
+version: 0.1.0
+date-released: "2026-11-13"
 license: MIT
 repository-code: "https://github.com/raminzandvakili/sway-eval"
 keywords:
@@ -33,6 +29,7 @@ keywords:
   - order sensitivity
   - fairness
   - robustness
+# Once the accompanying paper has an arXiv identifier, uncomment preferred-citation.
 # preferred-citation:
 #   type: article
 #   title: "<paper title>"

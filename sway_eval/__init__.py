@@ -15,7 +15,7 @@ from .space import (
     ordered_subsets,
 )
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 __all__ = [
     "calibrate",

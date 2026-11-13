@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sway-eval"
-version = "0.0.1"
+version = "0.1.0"
 description = "Audit how much the order of a record's sections decides an AI decision model's verdict"
 readme = "README.md"
 requires-python = ">=3.10"
